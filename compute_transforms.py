@@ -64,8 +64,8 @@ def main(
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--imageFilepath1', help="The filepath to the 1st image. Default: './images/IMG_6660.JPG'", default='./images/IMG_6660.JPG')
-    parser.add_argument('--imageFilepath2', help="The filepath to the 2nd image. Default: './images/IMG_6661.JPG'", default='./images/IMG_6661.JPG')
+    parser.add_argument('--imageFilepath1', help="The filepath to the 1st image. Default: './images/board_7m.jpg'", default='./images/board_7m.jpg')
+    parser.add_argument('--imageFilepath2', help="The filepath to the 2nd image. Default: './images/board_1m.jpg'", default='./images/board_1m.jpg')
     parser.add_argument('--outputDirectory', help="The output directory. Default: './compute_transforms_outputs'",
                         default='./compute_transforms_outputs')
     args = parser.parse_args()
