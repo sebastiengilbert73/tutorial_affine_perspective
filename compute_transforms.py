@@ -37,6 +37,9 @@ def main(
     warped_image_size = (1200, 1200)
     warped_affine_img1 = cv2.warpAffine(image1, affine_mtx1, dsize=warped_image_size)
     warped_affine_img2 = cv2.warpAffine(image2, affine_mtx2, dsize=warped_image_size)
+    CircleFixedPoints(warped_affine_img1, warped_feature_points)
+    CircleFixedPoints(warped_affine_img2, warped_feature_points)
+
     warped_affine_img1_filepath = os.path.join(outputDirectory, "computeTransforms_main_warpedAffine1.png")
     cv2.imwrite(warped_affine_img1_filepath, warped_affine_img1)
     warped_affine_img2_filepath = os.path.join(outputDirectory, "computeTransforms_main_warpedAffine2.png")
@@ -56,6 +59,9 @@ def main(
     # Warp perspective
     warped_perspective_img1 = cv2.warpPerspective(image1, perspective_mtx1, dsize=warped_image_size)
     warped_perspective_img2 = cv2.warpPerspective(image2, perspective_mtx2, dsize=warped_image_size)
+    CircleFixedPoints(warped_perspective_img1, warped_feature_points)
+    CircleFixedPoints(warped_perspective_img2, warped_feature_points)
+
     warped_perspective_img1_filepath = os.path.join(outputDirectory, "computeTransforms_main_warpedPerspective1.png")
     cv2.imwrite(warped_perspective_img1_filepath, warped_perspective_img1)
     warped_perspective_img2_filepath = os.path.join(outputDirectory, "computeTransforms_main_warpedPerspective2.png")
@@ -76,7 +82,11 @@ def DrawABCD(image, points_arr):
         cv2.putText(image, ABCD[point_ndx], (point[0] - 40, point[1] - 40), cv2.FONT_HERSHEY_SIMPLEX, 4.0, (0, 255, 0),
                     thickness=6)
 
-    
+def CircleFixedPoints(image, fixed_points_arr):
+    for point_ndx in range(fixed_points_arr.shape[0]):
+        point = fixed_points_arr[point_ndx]
+        point = (round(point[0]), round(point[1]))
+        cv2.circle(image, point, 31, (0, 0, 255), thickness=3)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
