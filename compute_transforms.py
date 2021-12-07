@@ -24,6 +24,9 @@ def main(
     feature_points2 = np.array([[1295, 538], [3226, 626], [3637, 2724], [1637, 2982]], dtype=np.float32)
     warped_feature_points = np.array([[100, 100], [1100, 100], [1100, 1100], [100, 1100]], dtype=np.float32)
 
+    # Draw the location of A, B, C, D
+    DrawABCD(image1, feature_points1)
+    DrawABCD(image2, feature_points2)
     # Affine transform
     # With OpenCV
     affine_mtx1 = cv2.getAffineTransform(feature_points1[:3, :], warped_feature_points[:3, :])
@@ -38,9 +41,10 @@ def main(
     cv2.imwrite(warped_affine_img1_filepath, warped_affine_img1)
     warped_affine_img2_filepath = os.path.join(outputDirectory, "computeTransforms_main_warpedAffine2.png")
     cv2.imwrite(warped_affine_img2_filepath, warped_affine_img2)
-    cv2.imshow("Affine warped 1", warped_affine_img1)
+    window_original = cv2.namedWindow("Affine warped image", cv2.WINDOW_NORMAL)
+    cv2.imshow("Affine warped image", warped_affine_img1)
     cv2.waitKey(0)
-    cv2.imshow("Affine warped 2", warped_affine_img2)
+    cv2.imshow("Affine warped image", warped_affine_img2)
     cv2.waitKey(0)
 
     # Perspective transform
@@ -56,11 +60,23 @@ def main(
     cv2.imwrite(warped_perspective_img1_filepath, warped_perspective_img1)
     warped_perspective_img2_filepath = os.path.join(outputDirectory, "computeTransforms_main_warpedPerspective2.png")
     cv2.imwrite(warped_perspective_img2_filepath, warped_perspective_img2)
-    cv2.imshow("Perspective warped 1", warped_perspective_img1)
+
+    window_warped = cv2.namedWindow("Perspective warped image", cv2.WINDOW_NORMAL)
+    cv2.imshow("Perspective warped image", warped_perspective_img1)
     cv2.waitKey(0)
-    cv2.imshow("Perspective warped 2", warped_perspective_img2)
+    cv2.imshow("Perspective warped image", warped_perspective_img2)
     cv2.waitKey(0)
 
+def DrawABCD(image, points_arr):
+    ABCD = ['A', 'B', 'C', 'D']
+    for point_ndx in range(points_arr.shape[0]):
+        point = points_arr[point_ndx]
+        point = (round(point[0]), round(point[1]))
+        cv2.circle(image, point, 13, (255, 0, 0), thickness=-1)
+        cv2.putText(image, ABCD[point_ndx], (point[0] - 40, point[1] - 40), cv2.FONT_HERSHEY_SIMPLEX, 4.0, (0, 255, 0),
+                    thickness=6)
+
+    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
