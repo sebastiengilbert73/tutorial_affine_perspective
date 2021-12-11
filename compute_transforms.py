@@ -20,8 +20,8 @@ def main(
     image1 = cv2.imread(imageFilepath1, cv2.IMREAD_COLOR)
     image2 = cv2.imread(imageFilepath2, cv2.IMREAD_COLOR)
 
-    feature_points1 = np.array([[1365, 562], [3451, 532], [3771, 2893], [1675, 2956]], dtype=np.float32)
-    feature_points2 = np.array([[1295, 538], [3226, 626], [3637, 2724], [1637, 2982]], dtype=np.float32)
+    feature_points1 = np.array([[1295, 538], [3226, 626], [3637, 2724], [1637, 2982]], dtype=np.float32)
+    feature_points2 = np.array([[1365, 562], [3451, 532], [3771, 2893], [1675, 2956]], dtype=np.float32)
     warped_feature_points = np.array([[100, 100], [1100, 100], [1100, 1100], [100, 1100]], dtype=np.float32)
 
     # Draw the location of A, B, C, D
@@ -90,8 +90,8 @@ def CircleFixedPoints(image, fixed_points_arr):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--imageFilepath1', help="The filepath to the 1st image. Default: './images/board_7m.jpg'", default='./images/board_7m.jpg')
-    parser.add_argument('--imageFilepath2', help="The filepath to the 2nd image. Default: './images/board_1m.jpg'", default='./images/board_1m.jpg')
+    parser.add_argument('--imageFilepath1', help="The filepath to the 1st image. Default: './images/board_1m.jpg'", default='./images/board_1m.jpg')
+    parser.add_argument('--imageFilepath2', help="The filepath to the 2nd image. Default: './images/board_7m.jpg'", default='./images/board_7m.jpg')
     parser.add_argument('--outputDirectory', help="The output directory. Default: './compute_transforms_outputs'",
                         default='./compute_transforms_outputs')
     args = parser.parse_args()
