@@ -3,6 +3,7 @@ import argparse
 import os
 import cv2
 import numpy as np
+import transformations
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)-15s %(message)s')
 
@@ -72,6 +73,18 @@ def main(
     cv2.waitKey(0)
     cv2.imshow("Perspective warped image", warped_perspective_img2)
     cv2.waitKey(0)
+
+    # Compute the perspective transformation by solving a homogeneous system of linear equations
+    correspondences1 = {}
+    for pt_ndx in range(feature_points1.shape[0]):
+        correspondences1[tuple(warped_feature_points[pt_ndx].tolist())] = tuple(feature_points1[pt_ndx].tolist())
+    perspective_T1 = transformations.Perspective(correspondences1)
+    logging.info("perspective_T1.transformation_mtx =\n{}".format(perspective_T1.transformation_mtx))
+    correspondences2 = {}
+    for pt_ndx in range(feature_points2.shape[0]):
+        correspondences2[tuple(warped_feature_points[pt_ndx].tolist())] = tuple(feature_points2[pt_ndx].tolist())
+    perspective_T2 = transformations.Perspective(correspondences2)
+    logging.info("perspective_T2.transformation_mtx =\n{}".format(perspective_T2.transformation_mtx))
 
 def DrawABCD(image, points_arr):
     ABCD = ['A', 'B', 'C', 'D']
