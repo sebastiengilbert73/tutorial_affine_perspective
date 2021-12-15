@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import transformations
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)-15s %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)-15s %(message)s')
 
 def main(
         imageFilepath1,
@@ -32,8 +32,8 @@ def main(
     # With OpenCV
     affine_mtx1 = cv2.getAffineTransform(feature_points1[:3, :], warped_feature_points[:3, :])
     affine_mtx2 = cv2.getAffineTransform(feature_points2[:3, :], warped_feature_points[:3, :])
-    logging.info("affine_mtx1 =\n{}".format(affine_mtx1))
-    logging.info("affine_mtx2 =\n{}".format(affine_mtx2))
+    #logging.info("affine_mtx1 =\n{}".format(affine_mtx1))
+    #logging.info("affine_mtx2 =\n{}".format(affine_mtx2))
     # Warp affine
     warped_image_size = (1200, 1200)
     warped_affine_img1 = cv2.warpAffine(image1, affine_mtx1, dsize=warped_image_size)
@@ -55,8 +55,7 @@ def main(
     # With OpenCV
     perspective_mtx1 = cv2.getPerspectiveTransform(feature_points1, warped_feature_points)
     perspective_mtx2 = cv2.getPerspectiveTransform(feature_points2, warped_feature_points)
-    logging.info("perspective_mtx1 =\n{}".format(perspective_mtx1))
-    logging.info("perspective_mtx2 =\n{}".format(perspective_mtx2))
+
     # Warp perspective
     warped_perspective_img1 = cv2.warpPerspective(image1, perspective_mtx1, dsize=warped_image_size)
     warped_perspective_img2 = cv2.warpPerspective(image2, perspective_mtx2, dsize=warped_image_size)
@@ -79,12 +78,19 @@ def main(
     for pt_ndx in range(feature_points1.shape[0]):
         correspondences1[tuple(warped_feature_points[pt_ndx].tolist())] = tuple(feature_points1[pt_ndx].tolist())
     perspective_T1 = transformations.Perspective(correspondences1)
-    logging.info("perspective_T1.transformation_mtx =\n{}".format(perspective_T1.transformation_mtx))
+    logging.info("OpenCV's perspective_mtx1 =\n{}".format(perspective_mtx1))
+    logging.info("perspective_T1.transformation_mtx =\n{}\n".format(perspective_T1.transformation_mtx))
     correspondences2 = {}
     for pt_ndx in range(feature_points2.shape[0]):
         correspondences2[tuple(warped_feature_points[pt_ndx].tolist())] = tuple(feature_points2[pt_ndx].tolist())
     perspective_T2 = transformations.Perspective(correspondences2)
-    logging.info("perspective_T2.transformation_mtx =\n{}".format(perspective_T2.transformation_mtx))
+    logging.info("OpenCV's perspective_mtx2 =\n{}".format(perspective_mtx2))
+    logging.info("perspective_T2.transformation_mtx =\n{}\n".format(perspective_T2.transformation_mtx))
+
+    # Compute the affine transformation by solving a system of linear equations
+    affine_T1 = transformations.Affine(correspondences1)
+    logging.info("OpenCV's affine_mtx1 =\n{}".format(affine_mtx1))
+    logging.info("affine_T1.transformation_mtx =\n{}\n".format(affine_T1.transformation_mtx))
 
 def DrawABCD(image, points_arr):
     ABCD = ['A', 'B', 'C', 'D']
