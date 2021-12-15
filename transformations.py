@@ -1,9 +1,9 @@
 import numpy as np
 
 class Perspective():
-    def __init__(self, correspondeces_dict):
-        if len(correspondeces_dict) < 4:
-            raise ValueError("transformations.Perspective.__init__(): len(correspondeces_dict) ({}) < 4".format(len(correspondeces_dict)))
+    def __init__(self, correspondences_dict):
+        if len(correspondences_dict) < 4:
+            raise ValueError("transformations.Perspective.__init__(): len(correspondences_dict) ({}) < 4".format(len(correspondences_dict)))
         """
         | -X    -Y      -1      0       0       0       Xx      Yx      x | | A |   | 0 |
         |  0     0       0     -X      -Y      -1       Xy      Yy      y | | B | = | 0 |
@@ -12,9 +12,9 @@ class Perspective():
                                                                             | I |
         """
 
-        A = np.zeros((2 * len(correspondeces_dict), 9), np.float32)
+        A = np.zeros((2 * len(correspondences_dict), 9), np.float32)
         row = 0
-        for xy, XY in correspondeces_dict.items():
+        for xy, XY in correspondences_dict.items():
             x = xy[0]
             y = xy[1]
             X = XY[0]
@@ -53,3 +53,39 @@ class Perspective():
         self.transformation_mtx[2, 1] = z[7]
         self.transformation_mtx[2, 2] = z[8]
 
+class Affine():
+    def __init__(self, correspondences_dict):
+        if len(correspondences_dict) < 3:
+            raise ValueError("transformations.Affine.__init__(): len(correspondeces_dict) ({}) < 3".format(len(correspondeces_dict)))
+        """
+        | X    Y   1   0   0   0 | | a00 |   | u |
+        | 0    0   0   X   Y   1 | | a01 | = | v |
+        | ...                    | | ... |   |...|
+                                   | a12 |
+        """
+        A = np.zeros((2 * len(correspondences_dict), 6), np.float32)
+        b = np.zeros((2 * len(correspondences_dict), 1), np.float32)
+        row = 0
+        for uv, XY in correspondences_dict.items():
+            u = uv[0]
+            v = uv[1]
+            X = XY[0]
+            Y = XY[1]
+            A[row, 0] = X
+            A[row, 1] = Y
+            A[row, 2] = 1
+            A[row + 1, 3] = X
+            A[row + 1, 4] = Y
+            A[row + 1, 5] = 1
+            b[row] = u
+            b[row + 1] = v
+            row += 2
+        # Solve overdetermined system of linear equations Ax = b
+        x, residuals, rank, singular_values = np.linalg.lstsq(A, b, rcond=None)
+        self.transformation_mtx = np.zeros((2, 3), np.float32)
+        self.transformation_mtx[0, 0] = x[0]
+        self.transformation_mtx[0, 1] = x[1]
+        self.transformation_mtx[0, 2] = x[2]
+        self.transformation_mtx[1, 0] = x[3]
+        self.transformation_mtx[1, 1] = x[4]
+        self.transformation_mtx[1, 2] = x[5]
