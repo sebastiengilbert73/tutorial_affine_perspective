@@ -20,7 +20,7 @@ def main(
     correspondences_dict = dict(zip(quad1, quad2))
     perspective_T = transformations.Perspective(correspondences_dict)
     persp_T_mtx = perspective_T.transformation_mtx
-    logging.info("For general quadrilaterals, persp_T_mtx = {}".format(persp_T_mtx))
+    logging.info("For general quadrilaterals, persp_T_mtx = \n{}".format(persp_T_mtx))
     ScatterPlot(quad1, quad2)
 
     paral1 = GenerateParallelogramCorners()
@@ -28,7 +28,7 @@ def main(
     correspondences_dict = dict(zip(paral1, paral2))
     perspective_T = transformations.Perspective(correspondences_dict)
     persp_T_mtx = perspective_T.transformation_mtx
-    logging.info("For parallelograms, persp_T_mtx = {}".format(persp_T_mtx))
+    logging.info("For parallelograms, persp_T_mtx = \n{}".format(persp_T_mtx))
     ScatterPlot(paral1, paral2)
 
 
